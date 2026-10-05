@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ChemE Car - pH Dashboard</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" defer></script>
+  <script src="calibration.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <main class="dashboard">
+    <header>
+      <p class="eyebrow">ChemE Car Testing</p>
+      <h1>pH Dashboard</h1>
+      <p id="status" role="status">
+        Disconnected — ready for demo mode
+      </p>
+    </header>
+
+    <section class="card">
+      <h2>Live Reading</h2>
+
+      <div class="reading">
+        <span id="ph-value">—</span>
+        <span id="reading-unit" class="unit">pH</span>
+      </div>
+
+      <p id="calibration-status">Demo — simulated pH.</p>
+
+      <p>
+        Elapsed Time:
+        <span id="elapsed-time">0.0</span> s
+      </p>
+
+      <p>
+        Recording Time:
+        <span id="recording-time">0.0</span> s
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Controls</h2>
+
+      <div class="buttons">
+        <button id="demo-button" type="button">
+          Start Demo
+        </button>
+
+        <button id="connect-button" type="button">
+          Connect Arduino
+        </button>
+
+        <button id="record-button" type="button" disabled>
+          Start Recording
+        </button>
+
+        <button id="export-button" type="button" disabled>
+          Export Excel
+        </button>
+
+        <button id="reset-button" type="button">
+          Reset
+        </button>
+      </div>
+
+      <label for="recording-interval">Recording interval (ms)</label>
+
+      <input
+        id="recording-interval"
+        type="number"
+        min="100"
+        step="1"
+        value="100"
+        aria-describedby="interval-help"
+      >
+
+      <p id="interval-help">
+        100 ms = 10 readings per second.
+        1,000 ms = one per second.
+        Set before recording.
+        The sensor samples every 100 ms; longer intervals save
+        the first fresh sample at or after each due time.
+      </p>
+
+      <label for="target-ph">Target pH</label>
+
+      <input
+        id="target-ph"
+        type="number"
+        min="0"
+        max="14"
+        step="0.1"
+        value="7.0"
+      >
+
+      <p id="threshold-status">Waiting for readings</p>
+    </section>
+
+    <section class="card">
+    <h2>pH Calibration</h2>
+
+    <label for="sensor-name">Sensor name</label>
+    <input id="sensor-name" type="text" value="ChemE probe 1">
+
+    <p>
+        Enter each buffer's labeled pH.
+        Let the reading stabilize in that buffer before capturing.
+        Each capture averages the last five seconds.
+    </p>
+
+    <div class="test-fields">
+        <div>
+            <label for="buffer-1">Buffer 1 pH</label>
+            <input id="buffer-1" type="number"
+                   min="0" max="14" step="0.01" value="7.00">
+            <button id="capture-1" type="button" disabled>
+                Capture Buffer 1
+            </button>
+            <p id="capture-result-1">Not captured</p>
+        </div>
+
+        <div>
+            <label for="buffer-2">Buffer 2 pH</label>
+            <input id="buffer-2" type="number"
+                   min="0" max="14" step="0.01" value="4.01">
+            <button id="capture-2" type="button" disabled>
+                Capture Buffer 2
+            </button>
+            <p id="capture-result-2">Not captured</p>
+        </div>
+
+        <div>
+            <label for="buffer-3">Buffer 3 pH</label>
+            <input id="buffer-3" type="number"
+                   min="0" max="14" step="0.01" value="10.01">
+            <button id="capture-3" type="button" disabled>
+                Capture Buffer 3
+            </button>
+            <p id="capture-result-3">Not captured</p>
+        </div>
+    </div>
+
+    <div class="buttons">
+        <button id="apply-calibration" type="button" disabled>
+            Apply Calibration
+        </button>
+        <button id="load-calibration" type="button" disabled>
+            Load Saved Calibration
+        </button>
+        <button id="clear-calibration" type="button" disabled>
+            Use Voltage Mode
+        </button>
+    </div>
+
+    <p id="calibration-message" aria-live="polite">
+        Connect Arduino to calibrate.
+    </p>
+</section>
+
+    <section class="card">
+      <h2 id="chart-title">pH over time</h2>
+
+      <canvas
+        id="ph-chart"
+        width="900"
+        height="230"
+        aria-label="Graph of pH versus elapsed time"
+      >
+        Your browser does not support canvas.
+      </canvas>
+    </section>
+
+    <section class="card">
+      <h2>Test Results</h2>
+
+      <div class="test-fields">
+        <div>
+          <label for="solution-name">Solution Name</label>
+          <input
+            id="solution-name"
+            type="text"
+            maxlength="200"
+            placeholder="Example: hydrochloric acid"
+          >
+        </div>
+
+        <div>
+          <label for="concentration">Concentration</label>
+          <input
+            id="concentration"
+            type="number"
+            min="0"
+            step="any"
+            placeholder="0.1"
+          >
+        </div>
+
+        <div>
+          <label for="concentration-unit">Concentration Unit</label>
+          <input
+            id="concentration-unit"
+            type="text"
+            maxlength="50"
+            placeholder="Example: mol/L"
+          >
+        </div>
+
+        <div>
+          <label for="titrant-volume">Total Titrant Added (mL)</label>
+          <input
+            id="titrant-volume"
+            type="number"
+            min="0"
+            step="any"
+            placeholder="0"
+          >
+        </div>
+      </div>
+
+      <div class="test-statistics">
+        <p>Lowest pH: <strong id="minimum-ph">—</strong></p>
+        <p>Highest pH: <strong id="maximum-ph">—</strong></p>
+        <p>Average pH: <strong id="average-ph">—</strong></p>
+      </div>
+
+      <button id="save-test-button" type="button" disabled>
+        Save Test
+      </button>
+
+      <p id="save-status" role="status">
+        Stop a recording and fill in the test details to save.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Saved Tests</h2>
+
+      <div id="saved-tests">
+        <p>Loading saved tests…</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

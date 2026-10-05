@@ -1,0 +1,168 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #000000;
+  color: #edf2f7;
+  font-family: Arial, sans-serif;
+}
+
+.dashboard {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px 20px;
+}
+
+.eyebrow {
+  color: #58d6bd;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+h1 {
+  margin: 8px 0;
+  font-size: 36px;
+}
+
+h2 {
+  margin-top: 0;
+  font-size: 18px;
+}
+
+#status,
+.card p {
+  color: #aab9c8;
+}
+
+.card {
+  margin-top: 30px;
+  padding: 24px;
+  background: #254dcf;
+  border: 1px solid #fdfeff;
+  border-radius: 16px;
+}
+
+.reading {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+#ph-value {
+  font-size: 72px;
+  font-weight: bold;
+  color: #000000;
+}
+
+.unit {
+  font-size: 24px;
+  color: #000000;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+button {
+  padding: 12px 18px;
+  background: #58d6bd;
+  color: #101820;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid #0f2823;
+  outline-offset: 4px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+input {
+  width: 120px;
+  padding: 10px;
+  background: #000000;
+  color: #edf2f7;
+  border: 1px solid #fbfbfc;
+  border-radius: 8px;
+  font-size: 18px;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #101820;
+  border-radius: 8px;
+}
+
+.card + .card {
+    margin-top: 50px;
+}
+
+.test-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.test-fields input {
+  width: 100%;
+}
+
+.test-statistics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  margin: 20px 0;
+}
+
+.test-statistics strong {
+  color: #ffffff;
+}
+
+@media (max-width: 600px) {
+  .test-fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+#ph-value,
+.unit {
+  color: #ffffff
+}
+
+#ph-value,
+#elapsed-time,
+#recording-time {
+  font-variant-numeric: tabular-nums;
+}
+
+#elapsed-time,
+#recording-time {
+  display: inline-block;
+  min-width: 6ch;
+}
+
+.test-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
